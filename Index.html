@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CA Audit Suite: Schedule III</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+    <header class="app-header no-print">
+        <div class="logo-area">
+            <span class="material-icons-round">gavel</span>
+            <div>
+                <h1>Audit Corp</h1>
+                <small>Statutory Compliance System</small>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-content no-print">
+
+        <section id="sec-setup" class="active-sec">
+            <div class="section-title">
+                <span class="material-icons-round">settings</span> Engagement Setup
+            </div>
+            <div class="card">
+                <h3><span class="material-icons-round">business</span> Client Details</h3>
+                <input type="text" id="cl-name" placeholder="Entity Name (e.g. ABC Pvt Ltd)">
+                <input type="text" id="cl-year" placeholder="Financial Year (e.g. 2025-26)">
+                <input type="text" id="cl-pan" placeholder="PAN Number">
+            </div>
+            <div class="card">
+                <h3><span class="material-icons-round">badge</span> Auditor Details</h3>
+                <input type="text" id="au-firm" placeholder="Firm Name">
+                <input type="text" id="au-name" placeholder="Partner Name">
+                <input type="text" id="au-frn" placeholder="Firm Reg. No. (FRN)">
+                <input type="text" id="au-mem" placeholder="Membership No.">
+                <input type="text" id="au-udin" placeholder="UDIN (Optional)">
+                <input type="text" id="au-place" value="New Delhi" placeholder="Place of Signing">
+            </div>
+            <div class="card">
+                <h3><span class="material-icons-round">percent</span> Taxation</h3>
+                <div class="row-input">
+                    <label>Corp. Tax Rate (%)</label>
+                    <input type="number" id="cfg-tax" value="25">
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-accounts">
+            <div class="section-title">
+                <span class="material-icons-round">account_tree</span> Chart of Accounts
+            </div>
+            <div class="card form-bg">
+                <label>Account Name</label>
+                <input type="text" id="ac-name" placeholder="e.g. HDFC Bank, Share Capital">
+                
+                <label>Nature (Schedule III Head)</label>
+                <select id="ac-group">
+                    <optgroup label="EQUITY & LIABILITIES">
+                        <option value="Eq-Cap">Shareholders Funds - Share Capital</option>
+                        <option value="Eq-Res">Shareholders Funds - Reserves & Surplus</option>
+                        <option value="Lia-Lng">Non-Current Liab - Long Term Borrowings</option>
+                        <option value="Lia-Trd">Current Liab - Trade Payables</option>
+                        <option value="Lia-Oth">Current Liab - Other Current Liab</option>
+                    </optgroup>
+                    <optgroup label="ASSETS">
+                        <option value="Ast-PPE">Non-Current - Property, Plant & Equipment</option>
+                        <option value="Ast-Inv">Current Assets - Inventories</option>
+                        <option value="Ast-Trd">Current Assets - Trade Receivables</option>
+                        <option value="Ast-Csh">Current Assets - Cash & Cash Equiv.</option>
+                    </optgroup>
+                    <optgroup label="INCOME">
+                        <option value="Inc-Ops">Revenue from Operations</option>
+                        <option value="Inc-Oth">Other Income</option>
+                    </optgroup>
+                    <optgroup label="EXPENSES">
+                        <option value="Exp-Pur">Purchase / Material Cost</option>
+                        <option value="Exp-Emp">Employee Benefits Expense</option>
+                        <option value="Exp-Fin">Finance Costs</option>
+                        <option value="Exp-Oth">Other Expenses</option>
+                    </optgroup>
+                </select>
+                <button class="btn-primary" onclick="addAccount()">Create Ledger</button>
+            </div>
+            <div id="account-list" class="list-container"></div>
+        </section>
+
+        <section id="sec-voucher">
+            <div class="section-title">
+                <span class="material-icons-round">receipt_long</span> Journal Entry
+            </div>
+            <div class="card">
+                <div class="journal-box">
+                    <div class="j-row">
+                        <div class="badge dr">Dr</div>
+                        <select id="v-dr"></select>
+                    </div>
+                    <div class="j-row">
+                        <div class="badge cr">Cr</div>
+                        <select id="v-cr"></select>
+                    </div>
+                    <input type="number" id="v-amt" placeholder="Amount (₹)">
+                    <input type="text" id="v-narr" placeholder="Narration (Being...)">
+                    <input type="date" id="v-date">
+                    <button class="btn-success" onclick="postVoucher()">Post Entry</button>
+                </div>
+            </div>
+            <div id="trans-list" class="list-container"></div>
+        </section>
+
+        <section id="sec-reports">
+            <div class="section-title">
+                <span class="material-icons-round">analytics</span> Financial Statements
+            </div>
+            
+            <div class="report-tabs">
+                <button onclick="switchReport('tb')" class="active">T/B</button>
+                <button onclick="switchReport('pl')">P & L</button>
+                <button onclick="switchReport('bs')">B/S</button>
+            </div>
+
+            <div id="rep-tb" class="rep-view show">
+                <table class="fin-table">
+                    <thead><tr><th>Particulars</th><th>Dr</th><th>Cr</th></tr></thead>
+                    <tbody id="tb-body"></tbody>
+                    <tfoot><tr><td>TOTAL</td><td id="tb-dr">0</td><td id="tb-cr">0</td></tr></tfoot>
+                </table>
+            </div>
+
+            <div id="rep-pl" class="rep-view">
+                <div id="pl-body" class="statement-body"></div>
+            </div>
+
+            <div id="rep-bs" class="rep-view">
+                <div id="bs-body" class="statement-body"></div>
+            </div>
+        </section>
+
+        <section id="sec-print">
+            <div class="section-title">
+                <span class="material-icons-round">picture_as_pdf</span> Audit Report
+            </div>
+            <div class="card center-content">
+                <span class="material-icons-round large-icon">description</span>
+                <h3>Generate Statutory Report</h3>
+                <p>This will generate a formal PDF containing:</p>
+                <ul class="check-list">
+                    <li>Independent Auditor's Report</li>
+                    <li>Balance Sheet (Sch III)</li>
+                    <li>Statement of Profit & Loss</li>
+                    <li>Notes to Accounts</li>
+                </ul>
+                <div class="select-box">
+                    <label>Audit Opinion</label>
+                    <select id="audit-op">
+                        <option value="Clean">Unmodified (Clean)</option>
+                        <option value="Qualified">Qualified</option>
+                    </select>
+                </div>
+                <button class="btn-print" onclick="generatePDF()">
+                    <span class="material-icons-round">print</span> ISSUE & PRINT
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav no-print">
+        <button onclick="nav('sec-setup')" class="active"><span class="material-icons-round">settings</span><small>Setup</small></button>
+        <button onclick="nav('sec-accounts')"><span class="material-icons-round">folder</span><small>Acc</small></button>
+        <button onclick="nav('sec-voucher')"><span class="material-icons-round">add_circle</span><small>Entry</small></button>
+        <button onclick="nav('sec-reports')"><span class="material-icons-round">poll</span><small>Report</small></button>
+        <button onclick="nav('sec-print')"><span class="material-icons-round">print</span><small>PDF</small></button>
+    </nav>
+
+    <div id="print-area"></div>
+
+<script src="app.js"></script>
+    
+</body>
+</html>
